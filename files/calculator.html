@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Калькулятор</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: Arial, sans-serif;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url('cat.png');
+      background-size: 120px 120px;
+      background-repeat: repeat;
+      opacity: 0.1;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .card {
+      position: relative;
+      z-index: 1;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
+      padding: 40px 48px;
+      width: 100%;
+      max-width: 440px;
+      text-align: center;
+    }
+
+    h1 { color: #fff; font-size: 24px; margin-bottom: 28px; }
+
+    .inputs {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+      justify-content: center;
+    }
+
+    input[type="text"] {
+      width: 35%;
+      flex: none;
+      padding: 12px 14px;
+      font-size: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      outline: none;
+      text-align: center;
+      transition: border-color 0.2s;
+    }
+
+    input[type="text"]::placeholder { color: rgba(255, 255, 255, 0.4); }
+    input[type="text"]:focus { border-color: rgba(255, 255, 255, 0.6); }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    button {
+      padding: 13px;
+      font-size: 15px;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      color: #fff;
+      cursor: pointer;
+      transition: transform 0.1s, opacity 0.2s;
+    }
+
+    button:hover { opacity: 0.88; }
+    button:active { transform: scale(0.97); }
+
+    #btn-sum      { background: linear-gradient(135deg, #6cc56c, #27ae60); }
+    #btn-diff     { background: linear-gradient(135deg, #6aaee8, #2471c4); }
+    #btn-product  { background: linear-gradient(135deg, #f0a500, #c47d00); }
+    #btn-division { background: linear-gradient(135deg, #e06c6c, #c0392b); }
+
+    .result-label {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+    }
+
+    .result {
+      padding: 16px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      font-size: 22px;
+      font-weight: bold;
+      min-height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s;
+    }
+
+    .result.error {
+      background: rgba(220, 53, 69, 0.25);
+      color: #ff6b6b;
+      font-size: 15px;
+      font-weight: normal;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Калькулятор</h1>
+    <div class="inputs">
+      <input type="text" id="num1" placeholder="Число 1" />
+      <input type="text" id="num2" placeholder="Число 2" />
+    </div>
+    <div class="buttons">
+      <button id="btn-sum">Сумма</button>
+      <button id="btn-diff">Разность</button>
+      <button id="btn-product">Произведение</button>
+      <button id="btn-division">Деление</button>
+    </div>
+    <div class="result-label">Результат</div>
+    <div class="result" id="result">—</div>
+  </div>
+
+  <script>
+    const resultEl = document.getElementById('result');
+
+    function sum(a, b) { return a + b; }
+    function diff(a, b) { return a - b; }
+    function product(a, b) { return a * b; }
+    function division(a, b) {
+      if (b === 0) return 'Ошибка: деление на ноль';
+      return a / b;
+    }
+
+    function getNumbers() {
+      const val1 = document.getElementById('num1').value.trim();
+      const val2 = document.getElementById('num2').value.trim();
+      if (val1 === '' || val2 === '') return { error: 'Пожалуйста, заполните оба поля' };
+      const a = Number(val1);
+      const b = Number(val2);
+      if (isNaN(a) || isNaN(b)) return { error: 'Ошибка: введите числа, а не текст' };
+      return { a, b };
+    }
+
+    function showResult(value) {
+      if (typeof value === 'string' && value.startsWith('Ошибка')) {
+        resultEl.textContent = value;
+        resultEl.className = 'result error';
+      } else {
+        resultEl.textContent = parseFloat(value.toFixed(10));
+        resultEl.className = 'result';
+      }
+    }
+
+    function showError(msg) {
+      resultEl.textContent = msg;
+      resultEl.className = 'result error';
+    }
+
+    document.getElementById('btn-sum').addEventListener('click', function () {
+      const nums = getNumbers();
+      if (nums.error) return showError(nums.error);
+      showResult(sum(nums.a, nums.b));
+    });
+
+    document.getElementById('btn-diff').addEventListener('click', function () {
+      const nums = getNumbers();
+      if (nums.error) return showError(nums.error);
+      showResult(diff(nums.a, nums.b));
+    });
+
+    document.getElementById('btn-product').addEventListener('click', function () {
+      const nums = getNumbers();
+      if (nums.error) return showError(nums.error);
+      showResult(product(nums.a, nums.b));
+    });
+
+    document.getElementById('btn-division').addEventListener('click', function () {
+      const nums = getNumbers();
+      if (nums.error) return showError(nums.error);
+      showResult(division(nums.a, nums.b));
+    });
+  </script>
+</body>
+</html>
