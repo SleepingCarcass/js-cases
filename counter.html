@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Счётчик</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .result {
+      width: 150px;
+      height: 150px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 64px;
+      font-weight: bold;
+      border-radius: 12px;
+      background-color: red;
+      color: #fff;
+      transition: background-color 0.3s;
+      border: 3px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .buttons {
+      display: flex;
+      gap: 20px;
+    }
+
+    button {
+      width: 70px;
+      height: 70px;
+      font-size: 36px;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      background: linear-gradient(135deg, #e96c6c, #c0392b);
+      color: #fff;
+      cursor: pointer;
+      transition: opacity 0.3s, transform 0.1s;
+    }
+
+    button:hover:not(:disabled) {
+      transform: scale(1.05);
+    }
+
+    button:active:not(:disabled) {
+      transform: scale(0.97);
+    }
+
+    button:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    #btn-plus {
+      background: linear-gradient(135deg, #6cc56c, #27ae60);
+    }
+
+    .message {
+      font-size: 18px;
+      font-weight: bold;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 8px;
+      padding: 14px 28px;
+      min-height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      transition: opacity 0.3s;
+      opacity: 0;
+    }
+
+    .message.visible {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="result" id="result">0</div>
+
+    <div class="buttons">
+      <button id="btn-minus">−</button>
+      <button id="btn-plus">+</button>
+    </div>
+
+    <div class="message" id="message">вы достигли экстремального значения</div>
+  </div>
+
+  <script>
+    let count = 0;
+
+    const resultEl = document.getElementById('result');
+    const btnPlus = document.getElementById('btn-plus');
+    const btnMinus = document.getElementById('btn-minus');
+    const messageEl = document.getElementById('message');
+
+    function updateUI() {
+      resultEl.textContent = count;
+
+      // Цвет фона окошка результата
+      if (count > 0) {
+        resultEl.style.backgroundColor = 'yellow';
+        resultEl.style.color = '#333';
+      } else if (count < 0) {
+        resultEl.style.backgroundColor = 'green';
+        resultEl.style.color = '#fff';
+      } else {
+        resultEl.style.backgroundColor = 'red';
+        resultEl.style.color = '#fff';
+      }
+
+      // Блокировка кнопок
+      btnPlus.disabled = count >= 10;
+      btnMinus.disabled = count <= -10;
+
+      // Сообщение об экстремальном значении
+      if (count === 10 || count === -10) {
+        messageEl.classList.add('visible');
+      } else {
+        messageEl.classList.remove('visible');
+      }
+    }
+
+    btnPlus.addEventListener('click', function () {
+      if (count < 10) {
+        count++;
+        updateUI();
+      }
+    });
+
+    btnMinus.addEventListener('click', function () {
+      if (count > -10) {
+        count--;
+        updateUI();
+      }
+    });
+
+    updateUI();
+  </script>
+
+</body>
+</html>
