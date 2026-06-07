@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Приветствие</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: Arial, sans-serif;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
+      padding: 40px 48px;
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #fff;
+      font-size: 26px;
+      margin-bottom: 28px;
+    }
+
+    .name-input {
+      width: 100%;
+      padding: 12px 16px;
+      font-size: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .name-input::placeholder {
+      color: rgba(255, 255, 255, 0.45);
+    }
+
+    .name-input:focus {
+      border-color: rgba(255, 255, 255, 0.6);
+    }
+
+    .error {
+      color: #ff6b6b;
+      font-size: 13px;
+      margin-top: 6px;
+      text-align: left;
+    }
+
+    .btn {
+      margin-top: 20px;
+      width: 100%;
+      padding: 13px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      background: linear-gradient(135deg, #6cc56c, #27ae60);
+      color: #fff;
+      cursor: pointer;
+      transition: transform 0.1s, opacity 0.2s;
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .greeting {
+      margin-top: 28px;
+      padding: 16px 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1>Привет, незнакомец!</h1>
+
+    <form method="post">
+      {% csrf_token %}
+      <div>
+        {{ form.name }}
+        {% if form.name.errors %}
+          <div class="error">{{ form.name.errors|join:", " }}</div>
+        {% endif %}
+      </div>
+      <button type="submit" class="btn">Submit</button>
+    </form>
+
+    {% if greeting %}
+      <div class="greeting">{{ greeting }}</div>
+    {% endif %}
+  </div>
+
+</body>
+</html>
